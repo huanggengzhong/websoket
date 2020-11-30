@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Socket.io</title>
+  <script src="https://cdn.bootcss.com/socket.io/2.2.0/socket.io.slim.js"></script>
+</head>
+
+<body>
+
+  <input type="text" id="input">
+  <button id="btn">send</button>
+  <div id="content-wrap"></div>
+
+  <script>
+    window.onload = function () {
+      let inputValue = null;
+
+      // 连接 socket.io
+      let socket = io('http://localhost:3000');
+      // 将创建的信息以添加 p 标签的形式展示成列表
+      socket.on('broadcast', data => {
+        let content = document.createElement('p');
+        content.innerHTML = data;
+        document.querySelector('#content-wrap').appendChild(content);
+      })
+
+      // 设置输入框的内容
+      let inputChangeHandle = (ev) => {
+        inputValue = ev.target.value;
+      }
+      // 获取输入框并监听输入
+      let inputDom = document.querySelector("#input");
+      inputDom.addEventListener('input', inputChangeHandle, false);
+
+      // 当用户点击发送信息的时候，进行数据交互
+      let sendHandle = () => {
+        socket.emit('channel', inputValue);
+      }
+      let btnDom = document.querySelector("#btn");
+      btnDom.addEventListener('click', sendHandle, false);
+
+      // 打页面卸载的时候，通知服务器关闭
+      window.onunload = () => {
+        btnDom.removeEventListener('click', sendHandle, false);
+        inputDom.removeEventListener('input', inputChangeHandle, false);
+      }
+    };
+  </script>
+</body>
+
+</html>
