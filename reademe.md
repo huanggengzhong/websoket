@@ -1,13 +1,7 @@
-安装
+安装运行命令
 
 ```js
-cnpm i
-```
-
-服务端运行命令
-
-```js
-npm run server
+cnpm i &&npm run server
 ```
 
 然后用浏览器打开下面网页即可.
